@@ -55,6 +55,17 @@ server.listen(port, function(){
 var demo_text = 'Yesterday dumb Bob destroyed my fancy iPhone in beautiful Denver, Colorado. I guess I will have to head over to the Apple Store and buy a new one.';
 var demo_url = 'http://www.npr.org/2013/11/26/247336038/dont-stuff-the-turkey-and-other-tips-from-americas-test-kitchen';
 var demo_html = '<html><head><title>Node.js Demo | AlchemyAPI</title></head><body><h1>Did you know that AlchemyAPI works on HTML?</h1><p>Well, you do now.</p></body></html>';
+var post_image = 'emaxfpo.jpg';
+var fs = require('fs');
+
+// function to encode file data to base64 encoded string
+function base64_encode(file) {
+    // read binary data
+    var bitmap = fs.readFileSync(file);
+    // convert binary data to base64 encoded string
+    return new Buffer(bitmap).toString('base64');
+}
+var base64str = base64_encode(post_image);
 
 
 function example(req, res) {
@@ -178,6 +189,12 @@ function combined(req, res, output) {
 function image(req, res, output) {
 	alchemyapi.image('url', demo_url, {}, function(response) {
 		output['image'] = { url:demo_url, response:JSON.stringify(response,null,4), results:response };
+		post_local_image(req, res, output);
+	});
+}
+function post_local_image(req, res, output) {
+	alchemyapi.image_keywords('image', post_image, {}, function(response) {
+		output['post_local_image'] = { url:post_image, base:base64str, response:JSON.stringify(response,null,4), results:response };
 		image_keywords(req, res, output);
 	});
 }
@@ -188,4 +205,6 @@ function image_keywords(req, res, output) {
 		res.render('example',output);
 	});
 }
+
+
 
