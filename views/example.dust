@@ -263,6 +263,20 @@
 
 		<p><strong>Image:</strong> {image.results.image}<br/>
 
+
+		<hr>
+
+		<h1>Image Local Upload</h1>
+		<p>
+		For the docs: <a href='http://www.alchemyapi.com/api/' target='_blank'>http://www.alchemyapi.com/api/</a></p>
+
+		<h3>Processed Local Image</h3>
+		<p><img src="data:image/jpg;base64,{post_local_image.base}"></p>
+		
+		<h3>Response Object</h3>
+		<textarea rows='10' class='form-control'>{post_local_image.response}</textarea>
+
+
       <hr>
 
 		<h1>Image Keywords Tagging</h1>
@@ -323,6 +337,29 @@
 
 		<hr>
 
+		<h1>Face Recognition</h1>
+		<p>
+		For the docs: <a href='http://www.alchemyapi.com/api/' target='_blank'>http://www.alchemyapi.com/api/</a></p>
+
+		<h3>Processed URL</h3>
+		<p><a href='{face_image.url}'>{face_image.url}</a></p>
+		
+		<h3>Response Object</h3>
+		<textarea rows='10' class='form-control'>{face_image.response}</textarea>
+		
+		<hr>
+
+		<h1>Face Recognition Local Image</h1>
+		<p>
+		For the docs: <a href='http://www.alchemyapi.com/api/' target='_blank'>http://www.alchemyapi.com/api/</a></p>
+
+		<h3>Local Image</h3>
+		<p><img src="data:image/jpg;base64,{face_local_image.base}"></p>
+		
+		<h3>Response Object</h3>
+		<textarea rows='10' class='form-control'>{face_local_image.response}</textarea>
+
+		<hr>
 
 	</div>
 {/content}
