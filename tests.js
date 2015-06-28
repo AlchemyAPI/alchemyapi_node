@@ -24,6 +24,8 @@ var test_text = 'Bob broke my heart, and then made up this silly sentence to tes
 var test_html = '<html><head><title>The best SDK Test | AlchemyAPI</title></head><body><h1>Hello World!</h1><p>My favorite language is Javascript</p></body></html>';
 var test_url = 'http://www.nytimes.com/2013/07/13/us/politics/a-day-of-friction-notable-even-for-a-fractious-congress.html?_r=0';
 var test_image = './emaxfpo.jpg';
+var test_face_url = 'http://demo1.alchemyapi.com/images/vision/mother-daughter.jpg';
+var test_face_image = 'politicians.jpg';
 
 
 
@@ -380,10 +382,29 @@ function image_keywords() {
 	alchemyapi.image_keywords('image', test_image, null, function(response) {
 		assert.equal(response['status'],'OK');
 		console.log('Image keywords tests complete!\n');
-    combined();
+    url_face_tag();
 	});
 }
 
+//Face detection with URL
+function url_face_tag() {
+	console.log('Checking url image Face  . . . ');
+	alchemyapi.image_face_tag('url', test_face_url, null, function(response) {
+		assert.equal(response['status'],'OK');
+		console.log('Face Detection tests complete!\n');
+    image_face_tag();
+	});
+}
+
+//Face detection with POST
+function image_face_tag() {
+	console.log('Checking image Face  . . . ');
+	alchemyapi.image_face_tag('image', test_face_image, null, function(response) {
+		assert.equal(response['status'],'OK');
+		console.log('Face Detection tests complete!\n');
+    combined();
+	});
+}
 
 //Combined
 function combined() {

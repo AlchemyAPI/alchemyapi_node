@@ -56,6 +56,8 @@ var demo_text = 'Yesterday dumb Bob destroyed my fancy iPhone in beautiful Denve
 var demo_url = 'http://www.npr.org/2013/11/26/247336038/dont-stuff-the-turkey-and-other-tips-from-americas-test-kitchen';
 var demo_html = '<html><head><title>Node.js Demo | AlchemyAPI</title></head><body><h1>Did you know that AlchemyAPI works on HTML?</h1><p>Well, you do now.</p></body></html>';
 var post_image = 'emaxfpo.jpg';
+var url_face_image = 'http://demo1.alchemyapi.com/images/vision/mother-daughter.jpg';
+var post_face_image = 'politicians.jpg';
 var fs = require('fs');
 
 // function to encode file data to base64 encoded string
@@ -65,8 +67,9 @@ function base64_encode(file) {
     // convert binary data to base64 encoded string
     return new Buffer(bitmap).toString('base64');
 }
-var base64str = base64_encode(post_image);
 
+var base64str = base64_encode(post_image);
+var face_base64str = base64_encode(post_face_image);
 
 function example(req, res) {
 	var output = {};
@@ -192,9 +195,24 @@ function image(req, res, output) {
 		post_local_image(req, res, output);
 	});
 }
+
 function post_local_image(req, res, output) {
 	alchemyapi.image_keywords('image', post_image, {}, function(response) {
 		output['post_local_image'] = { url:post_image, base:base64str, response:JSON.stringify(response,null,4), results:response };
+		face_image(req, res, output);
+	});
+}
+
+function face_image(req, res, output) {
+	alchemyapi.image_face_tag('url', url_face_image, {}, function(response) {
+		output['face_image'] = { url:url_face_image, response:JSON.stringify(response,null,4), results:response };
+		face_local_image(req, res, output);
+	});
+}
+
+function face_local_image(req, res, output) {
+	alchemyapi.image_face_tag('image', post_face_image, {}, function(response) {
+		output['face_local_image'] = { url:post_face_image, base:face_base64str, response:JSON.stringify(response,null,4), results:response };
 		image_keywords(req, res, output);
 	});
 }
@@ -205,6 +223,5 @@ function image_keywords(req, res, output) {
 		res.render('example',output);
 	});
 }
-
 
 
