@@ -263,6 +263,20 @@
 
 		<p><strong>Image:</strong> {image.results.image}<br/>
 
+
+		<hr>
+
+		<h1>Image Local Upload</h1>
+		<p>
+		For the docs: <a href='http://www.alchemyapi.com/api/' target='_blank'>http://www.alchemyapi.com/api/</a></p>
+
+		<h3>Processed Local Image</h3>
+		<p><img src="data:image/jpg;base64,{post_local_image.base}"></p>
+		
+		<h3>Response Object</h3>
+		<textarea rows='10' class='form-control'>{post_local_image.response}</textarea>
+
+
       <hr>
 
 		<h1>Image Keywords Tagging</h1>
