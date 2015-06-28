@@ -268,9 +268,6 @@ AlchemyAPI.ENDPOINTS['image']['url'] = '/url/URLGetImage';
 AlchemyAPI.ENDPOINTS['image_keywords'] = {};
 AlchemyAPI.ENDPOINTS['image_keywords']['url'] = '/url/URLGetRankedImageKeywords';
 AlchemyAPI.ENDPOINTS['image_keywords']['image'] = '/image/ImageGetRankedImageKeywords';
-AlchemyAPI.ENDPOINTS['image_face_tag'] = {};
-AlchemyAPI.ENDPOINTS['image_face_tag']['url'] = '/url/URLGetRankedImageFaceTags';
-AlchemyAPI.ENDPOINTS['image_face_tag']['image'] = '/image/ImageGetRankedImageFaceTags';
 
 
 
@@ -832,33 +829,3 @@ AlchemyAPI.prototype.image_keywords =
   }
 };
 
-/**
-  * Face detection and Recognition
-  * 
-  * INPUT:
-  * flavor -> which version of the call (currently, only 'url' or 'image' is supported)
-  * data -> the URL to the data to analyze.
-  * options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
-  * callback -> the callback function for this async function 
-  * 
-  * Available Options:
-  * imagePostMode -> not-raw: pass an unencoded image file with "image=URI_ENCODED_DATA"; raw: pass an unencoded image file using POST ('image' flavor only).
-  * knowledgeGraph -> provide extra metadata for detected celebrities
-  *
-  * OUTPUT:
-  * The response, already converted from JSON to a Javascript object.
-*/
-AlchemyAPI.prototype.image_face_tag =
-    function(flavor, data, options, callback) {
-  options = options || {}
-
-  //Add the data to the options and analyze
-  if (flavor === "image") { // if it's an image, we'll pass the image to upload
-    this.analyze(AlchemyAPI.ENDPOINTS['image_face_tag'][flavor],
-        options, data, callback);
-  } else {
-    options[flavor] = data;
-    this.analyze(AlchemyAPI.ENDPOINTS['image_face_tag'][flavor],
-        options, callback);
-  }
-};
