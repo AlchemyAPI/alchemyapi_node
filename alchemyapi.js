@@ -183,7 +183,13 @@ function AlchemyAPI() {
       var response = "";
       res.setEncoding('utf8');
       res.on('data', function (chunk) { response += chunk; });
-      res.on('end', function () { callback(JSON.parse(response)); });
+      res.on('end', function () {
+          FnResp = JSON.parse(response);
+          if (res && res.headers && res.headers['x-alchemyapi-total-transactions']) {
+                FnResp.alchemyapi_total_transactions = Number(res.headers['x-alchemyapi-total-transactions']);
+          }
+          callback(FnResp);
+      });
       res.on('error', function (err) {
         callback({ status:'ERROR', statusInfo: err });
       });
