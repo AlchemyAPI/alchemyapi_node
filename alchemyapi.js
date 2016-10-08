@@ -17,7 +17,7 @@
 
 var http = require('http');
 var fs = require('fs');
-
+var Qs = require('qs');
 
 //Make the class available
 exports = module.exports = AlchemyAPI;
@@ -140,10 +140,12 @@ function AlchemyAPI() {
 	  *	The response, already converted from JSON to a Javascript object. 
 	*/
 	this.analyze = function (endpoint, params, sfile, callback) {
-    var urlKVPairs = [];
+    var urlQuery = "";
     var reqParams = "";
     var reqBody = "";
     var upload = false;
+    var useGet = params.get;
+    delete params.get;
 
 		//Add the API key and set the output mode to JSON
 		params['apikey'] = this.apikey;
@@ -157,21 +159,19 @@ function AlchemyAPI() {
       callback = sfile;
     }
 
-		//Build the API options into the URL (for upload) or body
-    Object.keys(params).forEach(function(key) {
-      urlKVPairs.push(key + '=' + encodeURIComponent(params[key]));
-    });
-    if (upload) {
-      reqParams = "?" + urlKVPairs.join('&');
+    //Build the API options into the URL (for upload) or body
+    urlQuery = Qs.stringify(params, {depth: 20});
+    if (upload || useGet) {
+      reqParams = "?" + urlQuery;
     } else {
-      reqBody = urlKVPairs.join('&');
+      reqBody = urlQuery;
     }
 
     //Build the HTTP request options
     var opts = {
-      method: "POST",
+      method: useGet ? "GET" : "POST",
       hostname: AlchemyAPI.HOST,
-      path: AlchemyAPI.BASE_URL + endpoint + reqParams,
+      path: AlchemyAPI.BASE_URL + endpoint + reqParams
     };
     if (upload) {
       opts['headers'] = {'Content-Length': fs.statSync(sfile).size};
@@ -268,6 +268,8 @@ AlchemyAPI.ENDPOINTS['image']['url'] = '/url/URLGetImage';
 AlchemyAPI.ENDPOINTS['image_keywords'] = {};
 AlchemyAPI.ENDPOINTS['image_keywords']['url'] = '/url/URLGetRankedImageKeywords';
 AlchemyAPI.ENDPOINTS['image_keywords']['image'] = '/image/ImageGetRankedImageKeywords';
+AlchemyAPI.ENDPOINTS['news'] = {};
+AlchemyAPI.ENDPOINTS['news']['data'] = '/data/GetNews';
 
 
 
@@ -829,3 +831,26 @@ AlchemyAPI.prototype.image_keywords =
   }
 };
 
+/**
+  * Gets hyper-relevant, curated dataset of news and blogs that has been enriched with AI.
+  * 
+  * INPUT:
+  * options -> various parameters that can be used to adjust how the API works, see below for more info on the available options.
+  * callback -> the callback function for this async function 
+  * 
+  * Available Options:
+  * start (required) -> the time (in UTC seconds) of the beginning of the query duration. This value is inclusive
+  * end (required) -> the time (in UTC seconds) of the end of the query duration. This value is non-inclusive
+  * timeSlice -> the duration (in seconds) of each time slice
+  * maxResults -> determines the maximum number of results to return
+  * q -> The query object. Can support nested JSON to create strings like `q.enriched.url.taxonomy.taxonomy_.score=>0.9`
+  *      For full documentation on `q,` see docs here: https://alchemyapi.readme.io/v1.0/docs/rest-api-documentation
+  *
+  * OUTPUT:
+  * The response, already converted from JSON to a Javascript object. 
+*/
+AlchemyAPI.prototype.news = function(options, callback) {
+  options = options || {};
+  options.get = true;
+  this.analyze(AlchemyAPI.ENDPOINTS['news']['data'], options, callback);
+};
